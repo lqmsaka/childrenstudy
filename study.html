@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+
+<body>
+	<div id="filter">
+	</div>
+	<dic id="exam"></dic>
+	<script src="jquery-3.4.1.min.js"></script>
+	<script src="data.js"></script>
+	<script>
+		let cache = {};
+
+		$(function () {
+			displayContent(content, 'root');
+		})
+		//let a = u1m1.sort(randomSort);
+
+		function randomSort(a, b) {
+			return Math.random() - 0.5;
+		}
+
+		function displayContent(data, id) {
+			if (Array.isArray(data)) {
+				questions = [];
+				for(let i in data){
+					let item = data[i];
+					questions.push(`<div>
+						<label class="form-control">${item.cn}:</label>
+						<input type="text" class="form-control" data-answer="${item.en}">
+						<label class="form-control">${item.cn}</label>
+						<span>✔</span>
+						<span>❌</span>
+					</div>`);
+				}
+				$("#exam").html(questions.join(""));
+			}
+			else {
+				//$(`select [level:gt(${level})]`).remove();
+				let op = []
+				for (let i in data) {
+					op.push(`<option value=${i}>${i}</option>`);
+					cache[i] = data[i];
+				}
+				let s = $(`#${id}`);
+				if(s.length==0){
+					$(filter).append(`<select id="${id}">${op.join('')}</select>`);
+					s = $(`#${id}`);
+					s.change(function(event){
+						displayContent(data[s.find(":selected").val()])
+					})
+				}
+				else{
+					
+					s.html(op.join(''));
+				}
+
+			}
+		}
+
+		function dc(id) {
+			displayContent(cache[id]);
+		}
+
+		function aa(sender, b, c, d) {
+			displayContent(cache[$(sender).find(":selected").val()]);
+		}
+	</script>
+</body>
+
+</html>
