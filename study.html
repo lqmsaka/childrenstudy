@@ -29,23 +29,25 @@
 
 	<script src="data.js"></script>
 	<script>
+		//当前显示的内容
 		let cache = {};
 
 		$(function () {
 			displayContent(content, 'root');
 			$("#check").click(checkAll);
 		})
-		//let a = u1m1.sort(randomSort);
 
 		function randomSort(a, b) {
 			return Math.random() - 0.5;
 		}
 
 		function displayContent(data, id) {
+			//如果是数组,显示题目
 			if (Array.isArray(data)) {
+				let shuffle = data.sort(randomSort);
 				let questions = [];
-				for (let i in data) {
-					let item = data[i];
+				for (let i in shuffle) {
+					let item = shuffle[i];
 					questions.push(`<div class="form-row">
 						<div class="col-sm">
 							<input type="text" class="form-control">`);
@@ -63,15 +65,15 @@
 				}
 				$("#exam").html(questions.join(""));
 			}
+			//不是数组,显示选项
 			else {
-				//$(`select [level:gt(${level})]`).remove();
-				let op = [`<option>请选择</option>`]
-				for (let i in data) {
-					op.push(`<option value=${i}>${i}</option>`);
-					cache[i] = data[i];
-				}
 				let s = $(`#${id}`);
 				if (s.length == 0) {
+					let op = [`<option>请选择</option>`]
+					for (let i in data) {
+						op.push(`<option value=${i}>${i}</option>`);
+						cache[i] = data[i];
+					}
 					$(filter).append(`<select id="${id}" class="custom-select">${op.join('')}</select>`);
 					s = $(`#${id}`);
 					s.change(function (event) {
@@ -88,14 +90,7 @@
 			}
 		}
 
-		function dc(id) {
-			displayContent(cache[id]);
-		}
-
-		function aa(sender, b, c, d) {
-			displayContent(cache[$(sender).find(":selected").val()]);
-		}
-
+		//检查所有的回答
 		function checkAll() {
 			//$("#check").prop("disabled", true);
 			//$("input").prop("disabled", true);
@@ -105,6 +100,7 @@
 			}
 		}
 
+		//检查给定的input jquery对象填写的答案是否正确
 		function check(question) {
 			let answers = question.nextAll(".answer");
 			for (let i = 0; i < answers.length; i++) {
